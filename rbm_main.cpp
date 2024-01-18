@@ -64,4 +64,5 @@ int main()
     // }
 
     rbm_methods.read_fam_training();
+    rbm_methods.completeData();
 }

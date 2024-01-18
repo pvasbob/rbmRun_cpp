@@ -7,6 +7,7 @@
 #include <iostream>
 #include <fstream>
 #include <iomanip>
+#include <complex>
 
 void rbm_METHODS::read_rbmfam_NAMELIST()
 {
@@ -137,4 +138,77 @@ void rbm_METHODS::read_fam_training()
     // print2d<std::complex<double>>(dH02, nuv, ntrain);
 
     // ifstream automatically close the due to its destructor.
+}
+
+void rbm_METHODS::completeData()
+{
+    // ----------------------------------------------------------------------------------------------------
+    // Complete data
+    // ----------------------------------------------------------------------------------------------------
+    // dH^{20}_{\mu\nu} + X_{\mu\nu}(omega)*(E_\mu + E_\nu)
+    // dH^{02}_{\mu\nu} + Y_{\mu\nu}(omega)*(E_\mu + E_\nu)
+    // need to define i_rbm which shows in main.
+    //
+    int i_rbm;
+    for (int i = 1; i <= ntrain; ++i)
+    {
+        for (int k = 1; k <= nuv; ++k)
+        {
+            dH20[-1 + k][-1 + i] += Xtrain[-1 + k][-1 + i] * twoEqp[-1 + k];
+            dH02[-1 + k][-1 + i] += Ytrain[-1 + k][-1 + i] * twoEqp[-1 + k];
+        }
+    }
+    //
+    i_rbm = 0;
+    if (mirror_points[-1 + 1])
+    { // training is assumed to be performed in the 1st quadrant
+        for (int i = 1; i <= ntrain; ++i)
+        {
+            ++i_rbm;
+        }
+    }
+    //
+    if (mirror_points[-1 + 2])
+    { // includes points in the 2nd quadrant
+        for (int i = 1; i <= ntrain; ++i)
+        {
+            ++i_rbm;
+            copy2dColTo2dCol(Ytrain, Xtrain, nuv, i_rbm, -1 + i);
+            copy2dColTo2dCol(Xtrain, Ytrain, nuv, i_rbm, -1 + i);
+            copy2dColTo2dCol(dH02, dH20, nuv, i_rbm, -1 + i);
+            copy2dColTo2dCol(dH20, dH02, nuv, i_rbm, -1 + i);
+            omegatrain[i_rbm] = -omegatrain[-1 + i] + iunit * std::imag(omegatrain[-1 + i]);
+        }
+    }
+    //
+    if (mirror_points[-1 + 4])
+    { // includes points in the 2nd quadrant
+        for (int i = 1; i <= ntrain; ++i)
+        {
+            ++i_rbm;
+            copy2dConjColTo2dCol(Xtrain, Xtrain, nuv, i_rbm, -1 + i);
+            copy2dConjColTo2dCol(Ytrain, Ytrain, nuv, i_rbm, -1 + i);
+            copy2dConjColTo2dCol(dH20, dH20, nuv, i_rbm, -1 + i);
+            copy2dConjColTo2dCol(dH02, dH02, nuv, i_rbm, -1 + i);
+            omegatrain[i_rbm] = std::conj(omegatrain[-1 + i]);
+        }
+    }
+    //
+    if (mirror_points[-1 + 3])
+    { // includes points in the 2nd quadrant
+        for (int i = 1; i <= ntrain; ++i)
+        {
+            ++i_rbm;
+            copy2dMConjColTo2dCol(Ytrain, Xtrain, nuv, i_rbm, -1 + i);
+            copy2dMConjColTo2dCol(Xtrain, Ytrain, nuv, i_rbm, -1 + i);
+            copy2dMConjColTo2dCol(dH20, dH20, nuv, i_rbm, -1 + i);
+            copy2dMConjColTo2dCol(dH02, dH02, nuv, i_rbm, -1 + i);
+            omegatrain[i_rbm] = -omegatrain[-1 + i];
+        }
+    }
+    //
+    if (i_rbm != nrbm)
+    {
+        std::cerr << "dimension error" << std::endl;
+    }
 }
