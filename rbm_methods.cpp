@@ -149,7 +149,7 @@ void rbm_METHODS::completeData()
     // dH^{02}_{\mu\nu} + Y_{\mu\nu}(omega)*(E_\mu + E_\nu)
     // need to define i_rbm which shows in main.
     //
-    print2d(dH02, nuv, nrbm);
+    // print2d(dH02, nuv, nrbm);
     int i_rbm;
     for (int i = 1; i <= ntrain; ++i)
     {
@@ -160,6 +160,9 @@ void rbm_METHODS::completeData()
         }
     }
     //
+    // std::cout << "before 1st quad." << std::endl;
+    // print2d(dH02, nuv, nrbm);
+    //
     i_rbm = 0;
     if (mirror_points[-1 + 1])
     { // training is assumed to be performed in the 1st quadrant
@@ -169,28 +172,35 @@ void rbm_METHODS::completeData()
         }
     }
     //
+    // std::cout << "before 2st quad." << std::endl;
+    // print2d(dH02, nuv, nrbm);
+    //
     if (mirror_points[-1 + 2])
     { // includes points in the 2nd quadrant
         for (int i = 1; i <= ntrain; ++i)
         {
             ++i_rbm;
-            copy2dColTo2dCol(Ytrain, Xtrain, nuv, i_rbm, -1 + i);
-            copy2dColTo2dCol(Xtrain, Ytrain, nuv, i_rbm, -1 + i);
-            copy2dColTo2dCol(dH02, dH20, nuv, i_rbm, -1 + i);
-            copy2dColTo2dCol(dH20, dH02, nuv, i_rbm, -1 + i);
-            omegatrain[i_rbm] = -omegatrain[-1 + i] + iunit * std::imag(omegatrain[-1 + i]);
+            // std::cout << "i_rbm: " << i_rbm << std::endl;
+            copy2dColTo2dCol(Ytrain, Xtrain, nuv, -1 + i, -1 + i_rbm);
+            copy2dColTo2dCol(Xtrain, Ytrain, nuv, -1 + i, -1 + i_rbm);
+            copy2dColTo2dCol(dH02, dH20, nuv, -1 + i, -1 + i_rbm);
+            copy2dColTo2dCol(dH20, dH02, nuv, -1 + i, -1 + i_rbm);
+            omegatrain[-1 + i_rbm] = -omegatrain[-1 + i] + iunit * std::imag(omegatrain[-1 + i]);
         }
     }
+    //
+    // std::cout << "before 4st quad." << std::endl;
+    // print2d(dH02, nuv, nrbm);
     //
     if (mirror_points[-1 + 4])
     { // includes points in the 2nd quadrant
         for (int i = 1; i <= ntrain; ++i)
         {
             ++i_rbm;
-            copy2dConjColTo2dCol(Xtrain, Xtrain, nuv, i_rbm, -1 + i);
-            copy2dConjColTo2dCol(Ytrain, Ytrain, nuv, i_rbm, -1 + i);
-            copy2dConjColTo2dCol(dH20, dH20, nuv, i_rbm, -1 + i);
-            copy2dConjColTo2dCol(dH02, dH02, nuv, i_rbm, -1 + i);
+            copy2dConjColTo2dCol(Xtrain, Xtrain, nuv, -1 + i, -1 + i_rbm);
+            copy2dConjColTo2dCol(Ytrain, Ytrain, nuv, -1 + i, -1 + i_rbm);
+            copy2dConjColTo2dCol(dH20, dH20, nuv, -1 + i, -1 + i_rbm);
+            copy2dConjColTo2dCol(dH02, dH02, nuv, -1 + i, -1 + i_rbm);
             omegatrain[i_rbm] = std::conj(omegatrain[-1 + i]);
         }
     }
@@ -200,13 +210,15 @@ void rbm_METHODS::completeData()
         for (int i = 1; i <= ntrain; ++i)
         {
             ++i_rbm;
-            copy2dMConjColTo2dCol(Ytrain, Xtrain, nuv, i_rbm, -1 + i);
-            copy2dMConjColTo2dCol(Xtrain, Ytrain, nuv, i_rbm, -1 + i);
-            copy2dMConjColTo2dCol(dH20, dH20, nuv, i_rbm, -1 + i);
-            copy2dMConjColTo2dCol(dH02, dH02, nuv, i_rbm, -1 + i);
+            copy2dMConjColTo2dCol(Ytrain, Xtrain, nuv, -1 + i, -1 + i_rbm);
+            copy2dMConjColTo2dCol(Xtrain, Ytrain, nuv, -1 + i, -1 + i_rbm);
+            copy2dMConjColTo2dCol(dH02, dH20, nuv, -1 + i, -1 + i_rbm);
+            copy2dMConjColTo2dCol(dH20, dH02, nuv, -1 + i, -1 + i_rbm);
             omegatrain[i_rbm] = -omegatrain[-1 + i];
         }
     }
+    std::cout << "after 3st quad." << std::endl;
+    print2d(Ytrain, nuv, nrbm);
     //
     if (i_rbm != nrbm)
     {

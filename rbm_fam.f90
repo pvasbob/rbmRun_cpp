@@ -122,8 +122,8 @@ Contains
       write(*,*) 'twoEqp: ', twoEqp
       Do i = 1, nop
          Read(trainingdata, *) F20(:,i), F02(:,i)
-         write(*,*) 'F20: ', size(F20)
-         write(*,*) 'F20: ', F20
+         !rite(*,*) 'F20: ', size(F20)
+         !rite(*,*) 'F20: ', F20
          Print *, "operator i = ", i, "read"
       End Do
       Do i = 1, ntrain
@@ -328,6 +328,7 @@ Program RBM_FAM
    !----------------------------------------------------------------------------------------------------
    !  dH^{20}_{\mu\nu} + X_{\mu\nu}(omega)*(E_\mu + E_\nu)
    !  dH^{02}_{\mu\nu} + Y_{\mu\nu}(omega)*(E_\mu + E_\nu)
+   write(*,*) "completeData start."
    Do i = 1, ntrain
       Do k = 1, nuv
          dH20(k,i) = dH20(k,i) + Xtrain(k,i)*twoEqp(k) 
