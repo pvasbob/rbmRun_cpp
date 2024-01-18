@@ -7,6 +7,7 @@
 #include <iostream>
 #include <fstream>
 #include <iomanip>
+#include <complex>
 
 void rbm_METHODS::read_rbmfam_NAMELIST()
 {
@@ -134,10 +135,11 @@ void rbm_METHODS::read_fam_training()
         readComplexToCol(training_input, dH20, nuv, i);
         readComplexToCol(training_input, dH02, nuv, i);
     }
-    // print2d<std::complex<double>>(dH02, nuv, ntrain);
-    // print2d<std::complex<double>>(dH02, nuv, nrbm);
+    print2d<std::complex<double>>(dH02, nuv, ntrain);
+    std::cout << "separate" << std::endl;
 
     // ifstream automatically close the due to its destructor.
+    print2d(dH02, nuv, nrbm);
 }
 
 void rbm_METHODS::completeData()
@@ -149,7 +151,7 @@ void rbm_METHODS::completeData()
     // dH^{02}_{\mu\nu} + Y_{\mu\nu}(omega)*(E_\mu + E_\nu)
     // need to define i_rbm which shows in main.
     //
-    print2d(dH02, nuv, nrbm);
+    // print2d(dH02, nuv, nrbm);
     int i_rbm;
     for (int i = 1; i <= ntrain; ++i)
     {
