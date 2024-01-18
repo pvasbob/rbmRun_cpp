@@ -80,16 +80,16 @@ void rbm_METHODS::read_fam_training()
     std::cout << "**** reading FAM training data ****" << std::endl;
 
     training_input >> nuv;
-    std::cout << "qq, nuv: " << nuv << std::endl;
-    // Allocations
-    // twoEqp = new std::complex<double>[nuv];
-    // twoEqp = allocate1dArraytest(nuv);
-    // allocate1dArray<std::complex<double>>(twoEqp, nuv);
-    // for (int i = 0; i < nuv; i++)
-    // {
-    // std::cout << twoEqp[i] << std::endl;
-    // twoEqp[i] = readComplex(training_input);
-    // }
+    // std::cout << "qq, nuv: " << nuv << std::endl;
+    //  Allocations
+    //  twoEqp = new std::complex<double>[nuv];
+    //  twoEqp = allocate1dArraytest(nuv);
+    //  allocate1dArray<std::complex<double>>(twoEqp, nuv);
+    //  for (int i = 0; i < nuv; i++)
+    //  {
+    //  std::cout << twoEqp[i] << std::endl;
+    //  twoEqp[i] = readComplex(training_input);
+    //  }
     //
     allocate1dArray<std::complex<double>>(twoEqp, nuv);
     allocate2dArray<std::complex<double>>(F20, nuv, nop);
@@ -114,12 +114,12 @@ void rbm_METHODS::read_fam_training()
 
     // std::cout << "show type of twoEqp" << twoEqp << std::endl;
     readComplex1d(training_input, twoEqp, nuv);
-    for (int i = 0; i < nuv; i++)
-    {
-        std::cout << "In main: " << twoEqp[i] << std::endl;
-    }
-    // std::cout << readComplex(training_input) << std::endl;
-    // std::cout << readComplex(training_input) << std::endl;
+    // for (int i = 0; i < nuv; i++)
+    //{
+    //     std::cout << "In main: " << twoEqp[i] << std::endl;
+    // }
+    //  std::cout << readComplex(training_input) << std::endl;
+    //  std::cout << readComplex(training_input) << std::endl;
     for (int i = 0; i < nop; i++)
     {
         readComplexToCol(training_input, F20, nuv, i);
@@ -134,7 +134,7 @@ void rbm_METHODS::read_fam_training()
         readComplexToCol(training_input, dH20, nuv, i);
         readComplexToCol(training_input, dH02, nuv, i);
     }
-    print2d<std::complex<double>>(dH02, nuv, ntrain);
+    // print2d<std::complex<double>>(dH02, nuv, ntrain);
 
     // ifstream automatically close the due to its destructor.
 }

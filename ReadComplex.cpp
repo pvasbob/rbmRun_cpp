@@ -19,7 +19,7 @@ std::complex<double> readComplex(std::ifstream &file)
 // Function to read complex array from a string and assign to array
 void readComplex1d(std::ifstream &file, std::complex<double> *&array, int dim1)
 {
-    std::cout << "Inside readComplex1d." << std::endl;
+    // std::cout << "Inside readComplex1d." << std::endl;
     char dummy;
     double real, imag;
     for (int i = 0; i < dim1; i++)
