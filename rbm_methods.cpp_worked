@@ -1,0 +1,98 @@
+#include "rbm_methods.h"
+
+#include <iostream>
+#include <fstream>
+#include <iomanip>
+
+// Function to read a complex number from a string
+// std::complex<double> readComplex(std::ifstream &file)
+//{
+//    char dummy;
+//    double real, imag;
+//
+//    file >> dummy;                 // Read the opening parenthesis
+//    file >> real >> dummy >> imag; // Read real, comma, imag
+//    file >> dummy;                 // Read the closing parenthesis
+//    std::cout << real << " " << imag << std::endl;
+//    return {real, imag};
+//}
+
+void rbm_METHODS::read_rbmfam_NAMELIST()
+{
+    // Default values
+    normcut = 1.0e-14;
+    number_of_training_points = 0;
+    number_of_operators = 0;
+    fam_training_inputfile = "temp";
+    rbm_outputfile = "temp";
+    emulator_outputfile = "temp";
+    VARIATION = 1;
+    STRENGTH_EMULATOR_RUN = true;
+    qrpa_omega_emulatorrun_start = 0.0;
+    qrpa_omega_emulatorrun_step = 0.1;
+    nmax_emulatorrun = 1;
+    //
+    for (int i = 0; i < 4; ++i)
+    {
+        mirror_points[i] = true;
+    }
+
+    // Open the file for reading
+    std::ifstream inputFile("rbmfam_NAMELIST.dat");
+
+    // Check if the file is open
+    if (!inputFile.is_open())
+    {
+        std::cerr << "Error opening file!" << std::endl;
+    }
+
+    inputFile >> normcut >> number_of_training_points >> number_of_operators;
+    inputFile >> fam_training_inputfile >> rbm_outputfile >> emulator_outputfile;
+    inputFile >> VARIATION >> std::boolalpha >> STRENGTH_EMULATOR_RUN;
+
+    char discard;
+    double realPart, imagPart;
+    inputFile >> discard >> realPart >> discard >> imagPart >> discard;
+    qrpa_omega_emulatorrun_start = std::complex<double>(realPart, imagPart);
+    inputFile >> discard >> realPart >> discard >> imagPart >> discard;
+    qrpa_omega_emulatorrun_step = std::complex<double>(realPart, imagPart);
+
+    // Read the remaining values
+    inputFile >> nmax_emulatorrun;
+    for (int i = 0; i < 8; ++i)
+    {
+        inputFile >> std::boolalpha >> mirror_points[i];
+    }
+
+    // Close the file
+    inputFile.close();
+
+    // Display the read values
+    std::cout << "Read values from the file:" << std::endl;
+    std::cout << normcut << std::endl;
+    std::cout << number_of_training_points << std::endl;
+    std::cout << number_of_operators << std::endl;
+    std::cout << fam_training_inputfile << std::endl;
+    std::cout << rbm_outputfile << std::endl;
+    std::cout << emulator_outputfile << std::endl;
+    std::cout << VARIATION << std::endl;
+    std::cout << STRENGTH_EMULATOR_RUN << std::endl;
+
+    // Display complex numbers
+    std::cout << "Complex numbers:" << std::endl;
+    // for (const auto &complexNumber : complexNumbers)
+    //{
+    //     std::cout << "(" << complexNumber.real() << ", " << complexNumber.imag() << ")" << std::endl;
+    // }
+
+    std::cout << "(" << qrpa_omega_emulatorrun_start.real() << ", " << qrpa_omega_emulatorrun_start.imag() << ")" << std::endl;
+    std::cout << "(" << qrpa_omega_emulatorrun_step.real() << ", " << qrpa_omega_emulatorrun_step.imag() << ")" << std::endl;
+    std::cout << nmax_emulatorrun << std::endl;
+
+    // Display bool values
+    std::cout << "Bool values:" << std::endl;
+    for (int i = 0; i < 8; ++i)
+    {
+        std::cout << std::boolalpha << mirror_points[i] << std::endl;
+    }
+}
