@@ -1,4 +1,4 @@
-ALL =  MultiDimArraySetToValue.h rbm_variables.h MultiDimArrayAllocate.o  ReadComplex.o rbm_methods.o  rbm_main.o
+ALL =  ReadInputToCol.o MultiDimArraySetToValue.h  MultiDimArrayPrint.h  rbm_variables.h MultiDimArrayAllocate.o  ReadComplex.o rbm_methods.o  rbm_main.o
 Target = main
 CXX = g++
 

@@ -2,6 +2,7 @@
 #include "ReadComplex.h"
 #include "MultiDimArrayAllocate.h"
 #include "MultiDimArraySetToValue.h"
+#include "MultiDimArrayPrint.h"
 
 #include <iostream>
 #include <fstream>
@@ -119,4 +120,21 @@ void rbm_METHODS::read_fam_training()
     }
     // std::cout << readComplex(training_input) << std::endl;
     // std::cout << readComplex(training_input) << std::endl;
+    for (int i = 0; i < nop; i++)
+    {
+        readComplexToCol(training_input, F20, nuv, i);
+        readComplexToCol(training_input, F02, nuv, i);
+    }
+    //
+    for (int i = 0; i < ntrain; i++)
+    {
+        omegatrain[i] = readComplex(training_input);
+        readComplexToCol(training_input, Xtrain, nuv, i);
+        readComplexToCol(training_input, Ytrain, nuv, i);
+        readComplexToCol(training_input, dH20, nuv, i);
+        readComplexToCol(training_input, dH02, nuv, i);
+    }
+    print2d<std::complex<double>>(dH02, nuv, ntrain);
+
+    // ifstream automatically close the due to its destructor.
 }
