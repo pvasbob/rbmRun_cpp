@@ -256,3 +256,25 @@ void rbm_METHODS::strengthAtTraining()
                   << std::setw(20) << omegatrain[-1 + i] << std::endl;
     }
 }
+
+void rbm_METHODS::kernelCalculation()
+{
+    allocate2dArray(NormKernel, nrbm, nrbm);
+    allocate2dArray(HamiltonianKernel, nrbm, nrbm);
+    allocate2dArray(u_norm, nrbm, nrbm);
+    allocate2dArray(u_norminv, nrbm, nrbm);
+    allocate1dArray(norm_eigen, nrbm);
+    allocate1dArray(collidx, nrbm);
+    allocate1dArray(sqrt_norm, nrbm);
+    //
+    allocate2dArray(NormKernelHalf, nrbm, nrbm);
+    allocate2dArray(NormKernelHalfInv, nrbm, nrbm);
+    //
+    allocate2dArray(tempmat, nrbm, nrbm);
+    allocate2dArray(tempmat2, nrbm, nrbm);
+    allocate2dArray(tempmat3, nrbm, nrbm);
+    allocate2dArray(NormKernelRegularized, nrbm, nrbm);
+    allocate2dArray(unitmat, nrbm, nrbm);
+    //
+    allocate1dArray(realtemp, nrbm);
+}

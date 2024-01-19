@@ -3,9 +3,6 @@
 
 int main()
 {
-    int i, j, k, l, i_rbm, outp = 20, emu = 21;
-    Complex **tempmat, **tempmat2, **tempmat3;
-    double pi = std::acos(-1.0);
 
     // std::cout << "Hello World!" << std::endl;
     rbm_METHODS rbm_methods;
@@ -66,4 +63,5 @@ int main()
     rbm_methods.read_fam_training();
     rbm_methods.completeData();
     rbm_methods.strengthAtTraining();
+    rbm_methods.kernelCalculation();
 }

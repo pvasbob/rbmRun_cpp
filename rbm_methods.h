@@ -9,4 +9,5 @@ public:
     void read_fam_training();
     void completeData();
     void strengthAtTraining();
+    void kernelCalculation();
 };

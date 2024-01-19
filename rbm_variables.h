@@ -12,10 +12,13 @@ using Complex = std::complex<pr>;
 // static constexpr int ipr = 1;
 // static constexpr pr pr_val = 1.0;
 static const Complex iunit = Complex(0.0, 1.0);
-
+static double pi = std::acos(-1.0);
+//
 class rbm_VARIABLES
 {
 public:
+    int outp = 20, emu = 21;
+    Complex **tempmat, **tempmat2, **tempmat3;
     // Variables
     pr pi, Norm;
     int nop;
