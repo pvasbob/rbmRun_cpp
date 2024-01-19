@@ -64,4 +64,6 @@ int main()
     rbm_methods.completeData();
     rbm_methods.strengthAtTraining();
     rbm_methods.kernelCalculation();
+    //
+    rbm_methods.diagNormKernel();
 }

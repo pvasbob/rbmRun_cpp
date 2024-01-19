@@ -10,4 +10,6 @@ public:
     void completeData();
     void strengthAtTraining();
     void kernelCalculation();
+
+    void diagNormKernel();
 };

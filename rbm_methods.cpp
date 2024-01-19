@@ -5,6 +5,9 @@
 #include "MultiDimArrayPrint.h"
 #include "DotProduct.h"
 
+#include "MsgToScreen.h"
+#include "DiagMat.h"
+
 #include <iostream>
 #include <fstream>
 #include <iomanip>
@@ -389,4 +392,9 @@ void rbm_METHODS::kernelCalculation()
     //
     // std::cout << "NormKernel after remove tiny errors: " << std::endl;
     // print2d<std::complex<double>>(NormKernel, nrbm, nrbm);
+}
+
+void rbm_METHODS::diagNormKernel()
+{
+    diagGenComplexMat(nrbm, NormKernel, u_norm, norm_eigen, u_norminv, ierr);
 }
