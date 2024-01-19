@@ -3,6 +3,7 @@
 #include "MultiDimArrayAllocate.h"
 #include "MultiDimArraySetToValue.h"
 #include "MultiDimArrayPrint.h"
+#include "DotProduct.h"
 
 #include <iostream>
 #include <fstream>
@@ -185,7 +186,10 @@ void rbm_METHODS::completeData()
             copy2dColTo2dCol(Xtrain, Ytrain, nuv, -1 + i, -1 + i_rbm);
             copy2dColTo2dCol(dH02, dH20, nuv, -1 + i, -1 + i_rbm);
             copy2dColTo2dCol(dH20, dH02, nuv, -1 + i, -1 + i_rbm);
-            omegatrain[-1 + i_rbm] = -omegatrain[-1 + i] + iunit * std::imag(omegatrain[-1 + i]);
+            //
+            std::cout << "check: " << std::imag(omegatrain[-1 + i]) << "iunit: " << iunit << "product: " << iunit * std::imag(omegatrain[-1 + i]) << std::endl;
+            //
+            omegatrain[-1 + i_rbm] = -std::real(omegatrain[-1 + i]) + iunit * std::imag(omegatrain[-1 + i]);
         }
     }
     //
@@ -201,7 +205,7 @@ void rbm_METHODS::completeData()
             copy2dConjColTo2dCol(Ytrain, Ytrain, nuv, -1 + i, -1 + i_rbm);
             copy2dConjColTo2dCol(dH20, dH20, nuv, -1 + i, -1 + i_rbm);
             copy2dConjColTo2dCol(dH02, dH02, nuv, -1 + i, -1 + i_rbm);
-            omegatrain[i_rbm] = std::conj(omegatrain[-1 + i]);
+            omegatrain[-1 + i_rbm] = std::conj(omegatrain[-1 + i]);
         }
     }
     //
@@ -214,11 +218,11 @@ void rbm_METHODS::completeData()
             copy2dMConjColTo2dCol(Xtrain, Ytrain, nuv, -1 + i, -1 + i_rbm);
             copy2dMConjColTo2dCol(dH02, dH20, nuv, -1 + i, -1 + i_rbm);
             copy2dMConjColTo2dCol(dH20, dH02, nuv, -1 + i, -1 + i_rbm);
-            omegatrain[i_rbm] = -omegatrain[-1 + i];
+            omegatrain[-1 + i_rbm] = -omegatrain[-1 + i];
         }
     }
-    std::cout << "after 3st quad." << std::endl;
-    print2d(Ytrain, nuv, nrbm);
+    // std::cout << "after 3st quad." << std::endl;
+    // print2d(Ytrain, nuv, nrbm);
     //
     if (i_rbm != nrbm)
     {
@@ -226,4 +230,29 @@ void rbm_METHODS::completeData()
     }
     //
     // print2d(dH02, nuv, nrbm);
+}
+//
+void rbm_METHODS::strengthAtTraining()
+{
+    allocate1dArray<std::complex<double>>(SFtrain, nrbm);
+    allocate1dArray<std::complex<double>>(TFtrain, nrbm);
+    // no need to set to zero for SFtrain and TFtrain cause they will immediately assigned by doct product below.
+    for (int i = 1; i <= nrbm; i++)
+    {
+        SFtrain[-1 + i] = dot2dCol2dCol(F20, Xtrain, -1 + 1, -1 + i, nuv) + dot2dCol2dCol(F02, Ytrain, -1 + 1, -1 + i, nuv);
+        TFtrain[-1 + i] = dot2dConjCol2dCol(F20, Xtrain, -1 + 1, -1 + i, nuv) + dot2dConjCol2dCol(F02, Ytrain, -1 + 1, -1 + i, nuv);
+    }
+    // print1d<std::complex<double>>(SFtrain, nrbm);
+
+    std::cout << "Strength functions at the training energies (SF, TF)" << std::endl;
+    std::cout << "i    SF(Re, Im),   TF(Re, Im) omega(Re, Im)" << std::endl;
+
+    for (int i = 1; i <= nrbm; ++i)
+    {
+        std::cout << std::setw(5) << -1 + i
+                  << std::scientific << std::setprecision(10)
+                  << std::setw(20) << SFtrain[-1 + i]
+                  << std::setw(20) << TFtrain[-1 + i]
+                  << std::setw(20) << omegatrain[-1 + i] << std::endl;
+    }
 }

@@ -8,4 +8,5 @@ public:
     void read_rbmfam_NAMELIST();
     void read_fam_training();
     void completeData();
+    void strengthAtTraining();
 };

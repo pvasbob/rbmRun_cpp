@@ -11,12 +11,22 @@ void print2dCol(T **&array, int dim1, int col_index)
     }
 }
 
-// print out 2d elements in each col.
+// print out 2d elements for every col.
 template <typename T>
 void print2d(T **&array, int dim1, int dim2)
 {
     for (int col = 0; col < dim2; col++)
     {
         print2dCol<T>(array, dim1, col);
+    }
+}
+
+// print a 1d array
+template <typename T>
+void print1d(T *array, int dim)
+{
+    for (int i = 0; i < dim; i++)
+    {
+        std::cout << " index: " << i << " " << array[i] << std::endl;
     }
 }

@@ -9,9 +9,9 @@
 using pr = double;
 using Complex = std::complex<pr>;
 // Constants
-static constexpr int ipr = 1;
-static constexpr pr pr_val = 1.0;
-static const Complex iunit;
+// static constexpr int ipr = 1;
+// static constexpr pr pr_val = 1.0;
+static const Complex iunit = Complex(0.0, 1.0);
 
 class rbm_VARIABLES
 {
