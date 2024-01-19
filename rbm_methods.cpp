@@ -187,7 +187,7 @@ void rbm_METHODS::completeData()
             copy2dColTo2dCol(dH02, dH20, nuv, -1 + i, -1 + i_rbm);
             copy2dColTo2dCol(dH20, dH02, nuv, -1 + i, -1 + i_rbm);
             //
-            std::cout << "check: " << std::imag(omegatrain[-1 + i]) << "iunit: " << iunit << "product: " << iunit * std::imag(omegatrain[-1 + i]) << std::endl;
+            // std::cout << "check: " << std::imag(omegatrain[-1 + i]) << "iunit: " << iunit << "product: " << iunit * std::imag(omegatrain[-1 + i]) << std::endl;
             //
             omegatrain[-1 + i_rbm] = -std::real(omegatrain[-1 + i]) + iunit * std::imag(omegatrain[-1 + i]);
         }
@@ -259,22 +259,134 @@ void rbm_METHODS::strengthAtTraining()
 
 void rbm_METHODS::kernelCalculation()
 {
-    allocate2dArray(NormKernel, nrbm, nrbm);
-    allocate2dArray(HamiltonianKernel, nrbm, nrbm);
-    allocate2dArray(u_norm, nrbm, nrbm);
-    allocate2dArray(u_norminv, nrbm, nrbm);
-    allocate1dArray(norm_eigen, nrbm);
-    allocate1dArray(collidx, nrbm);
-    allocate1dArray(sqrt_norm, nrbm);
+    //===================================
+    // Allocation of matrices
+    //===================================
+    allocate2dArray<std::complex<double>>(NormKernel, nrbm, nrbm);
+    allocate2dArray<std::complex<double>>(HamiltonianKernel, nrbm, nrbm);
+    allocate2dArray<std::complex<double>>(u_norm, nrbm, nrbm);
+    allocate2dArray<std::complex<double>>(u_norminv, nrbm, nrbm);
+    allocate1dArray<std::complex<double>>(norm_eigen, nrbm);
+    allocate1dArray<int>(collidx, nrbm);
+    allocate1dArray<std::complex<double>>(sqrt_norm, nrbm);
     //
-    allocate2dArray(NormKernelHalf, nrbm, nrbm);
-    allocate2dArray(NormKernelHalfInv, nrbm, nrbm);
+    allocate2dArray<std::complex<double>>(NormKernelHalf, nrbm, nrbm);
+    allocate2dArray<std::complex<double>>(NormKernelHalfInv, nrbm, nrbm);
     //
-    allocate2dArray(tempmat, nrbm, nrbm);
-    allocate2dArray(tempmat2, nrbm, nrbm);
-    allocate2dArray(tempmat3, nrbm, nrbm);
-    allocate2dArray(NormKernelRegularized, nrbm, nrbm);
-    allocate2dArray(unitmat, nrbm, nrbm);
+    allocate2dArray<std ::complex<double>>(tempmat, nrbm, nrbm);
+    allocate2dArray<std ::complex<double>>(tempmat2, nrbm, nrbm);
+    allocate2dArray<std ::complex<double>>(tempmat3, nrbm, nrbm);
+    allocate2dArray<std ::complex<double>>(NormKernelRegularized, nrbm, nrbm);
+    allocate2dArray<std ::complex<double>>(unitmat, nrbm, nrbm);
     //
-    allocate1dArray(realtemp, nrbm);
+    allocate1dArray<double>(realtemp, nrbm);
+    //
+    //
+    //====================================
+    // set matricies to zero.
+    //====================================
+    set2dArrayToValue<std::complex<double>>(NormKernel, nrbm, nrbm, 0.0);
+    set2dArrayToValue<std::complex<double>>(HamiltonianKernel, nrbm, nrbm, 0.0);
+    set2dArrayToValue<std::complex<double>>(u_norm, nrbm, nrbm, 0.0);
+    set2dArrayToValue<std::complex<double>>(u_norminv, nrbm, nrbm, 0.0);
+    set1dArrayToValue<std::complex<double>>(norm_eigen, nrbm, 0.0);
+    set1dArrayToValue<int>(collidx, nrbm, 0.0);
+    set1dArrayToValue<std::complex<double>>(sqrt_norm, nrbm, 0.0);
+    //
+    set2dArrayToValue<std::complex<double>>(NormKernelHalf, nrbm, nrbm, 0.0);
+    set2dArrayToValue<std::complex<double>>(NormKernelHalfInv, nrbm, nrbm, 0.0);
+    //
+    set2dArrayToValue<std::complex<double>>(tempmat, nrbm, nrbm, 0.0);
+    set2dArrayToValue<std::complex<double>>(tempmat2, nrbm, nrbm, 0.0);
+    set2dArrayToValue<std::complex<double>>(tempmat3, nrbm, nrbm, 0.0);
+    set2dArrayToValue<std::complex<double>>(NormKernelRegularized, nrbm, nrbm, 0.0);
+    set2dArrayToValue<std::complex<double>>(unitmat, nrbm, nrbm, 0.0);
+    //
+    set1dArrayToValue<double>(realtemp, nrbm, 0.0);
+    //
+    //
+    //
+    for (int i = 1; i <= nrbm; i++)
+    {
+        unitmat[-1 + i][-1 + i] = 1.0;
+    }
+    //=====================================
+    // Kernel Calculation
+    //=====================================
+    //
+    //
+    // std::cout << "Xtrain before VARIATION: " << std::endl;
+    // print2d<std::complex<double>>(Xtrain, nuv, nrbm);
+    // std::cout << "Ytrain before VARIATION: " << std::endl;
+    // print2d<std::complex<double>>(Ytrain, nuv, nrbm);
+    //
+    if (VARIATION == 1)
+    {
+        for (int i = 1; i <= nrbm; i++)
+        {
+            for (int j = 1; j <= nrbm; j++)
+            {
+                // for (int k = 1; k <= nuv; k++)
+                //{
+                //     std::cout << "Xtrain, -1+i, -1+j, -1+k: " << -1 + i << " " << -1 + j << " " << -1 + k << " " << Xtrain[-1 + k][-1 + i] << " " << Xtrain[-1 + k][-1 + j] << std::endl;
+                // }
+                //
+                // for (int k = 1; k <= nuv; k++)
+                //{
+                //    std::cout << "Ytrain, -1+i, -1+j, -1+k: " << -1 + i << " " << -1 + j << " " << -1 + k << " " << Ytrain[-1 + k][-1 + i] << " " << Ytrain[-1 + k][-1 + j] << std::endl;
+                //}
+                // Norm Kernel
+                // std::cout << "dot product Xtran Xtrain, i, j: " << i << " " << j << " " << dot2dCol2dCol(Xtrain, Xtrain, -1 + i, -1 + j, nuv) << std::endl;
+                NormKernel[-1 + i][-1 + j] = dot2dConjCol2dCol(Xtrain, Xtrain, -1 + i, -1 + j, nuv) - dot2dConjCol2dCol(Ytrain, Ytrain, -1 + i, -1 + j, nuv);
+                // std::cout << "Inside VARIATION: " << -1 + i << " " << -1 + j << " " << NormKernel[-1 + i][-1 + j] << std::endl;
+                // Hamiltonian Kernel
+                HamiltonianKernel[-1 + i][-1 + j] = dot2dConjCol2dCol(Xtrain, dH20, -1 + i, -1 + j, nuv) + dot2dConjCol2dCol(Ytrain, dH02, -1 + i, -1 + j, nuv);
+            }
+        }
+    }
+    else if (VARIATION == 2)
+    {
+        for (int j = 1; j <= nrbm; j++)
+        {
+            for (int i = 1; i <= nrbm; i++)
+            {
+                // Norm Kernel
+                NormKernel[-1 + i][-1 + j] = dot2dConjCol2dCol(Xtrain, Xtrain, -1 + i, -1 + j, nuv) - dot2dConjCol2dCol(Ytrain, Ytrain, -1 + i, -1 + j, nuv);
+                // Hamiltonian Kernel
+                HamiltonianKernel[-1 + i][-1 + j] = dot2dConjCol2dCol(Xtrain, dH20, -1 + i, -1 + j, nuv) + dot2dConjCol2dCol(Ytrain, dH02, -1 + i, -1 + j, nuv);
+            }
+        }
+    }
+    else
+    {
+        std::cerr << "VARIATION should be 1 or 2" << std::endl;
+        exit(1);
+    }
+    //
+    // std::cout << "NormKernel: " << std::endl;
+    // print2d<std::complex<double>>(NormKernel, nrbm, nrbm);
+    // std::cout << "HamiltonianKernel: " << std::endl;
+    // print2d<std::complex<double>>(HamiltonianKernel, nrbm, nrbm);
+    //========================================================
+    // Remove tiny numerical error from NormKernel
+    //========================================================
+    for (int i = 1; i <= nrbm; ++i)
+    {
+        for (int j = 1; j <= nrbm; ++j)
+        {
+            if (std::abs(std::real(NormKernel[-1 + i][-1 + j])) < 1.0e-15)
+            {
+                // NormKernel(i,j) = iunit * Aimag(NormKernel(i,j))
+                NormKernel[-1 + i][-1 + j] = iunit * std::imag(NormKernel[-1 + i][-1 + j]);
+            }
+            if (std::abs(std::imag(NormKernel[-1 + i][-1 + j])) < 1.0e-15)
+            {
+                // NormKernel(i,j) = Dble(NormKernel(i,j))
+                NormKernel[-1 + i][-1 + j] = std::real(NormKernel[-1 + i][-1 + j]);
+            }
+        }
+    }
+    //
+    // std::cout << "NormKernel after remove tiny errors: " << std::endl;
+    // print2d<std::complex<double>>(NormKernel, nrbm, nrbm);
 }
