@@ -473,10 +473,52 @@ void rbm_METHODS::normEigenCutoff()
                   << std::setw(20) << std::setprecision(10) << std::imag(sqrt_norm[-1 + j]) << std::endl;
     }
 
-    int colldim = j;
+    colldim = j;
     std::cout << "colldim = " << colldim << std::endl;
     if (colldim == 0)
     {
         throw std::runtime_error("colldim = 0");
     }
+}
+
+void rbm_METHODS::normKernelExcludingSmallEigen()
+{
+    set2dArrayToValue<std::complex<double>>(NormKernelRegularized, nrbm, nrbm, 0.0);
+    //
+    std::cout << "nrbm, colldim: " << nrbm << " " << colldim << std::endl;
+    for (int j = 1; j <= nrbm; ++j)
+    {
+        for (int i = 1; i <= nrbm; ++i)
+        {
+            for (int k = 1; k <= colldim; ++k)
+            {
+                NormKernelRegularized[-1 + i][-1 + j] += u_norm[-1 + i][-1 + collidx[-1 + k]] * norm_eigen[-1 + collidx[-1 + k]] * u_norminv[-1 + collidx[-1 + k]][-1 + j];
+            }
+        }
+    }
+
+    // check
+    set2dArrayToValue<std::complex<double>>(tempmat, nrbm, nrbm, 0.0);
+    for (int j = 1; j <= nrbm; ++j)
+    {
+        for (int i = 1; i <= nrbm; ++i)
+        {
+            for (int k = 1; k <= nrbm; ++k)
+            {
+                tempmat[-1 + i][-1 + j] += u_norm[-1 + i][-1 + k] * norm_eigen[-1 + k] * u_norminv[-1 + k][-1 + j];
+            }
+        }
+    }
+    //
+    msgToScreen("HNormKernelRegularized:");
+    print2d(NormKernelRegularized, nrbm, nrbm);
+    msgToScreen("Htempmat:");
+    print2d(tempmat, nrbm, nrbm);
+    //
+    std::cout << "norm kernel diagonalization check" << std::endl;
+    // NOT important, implement later.
+    // Print *, "norm kernel diagonalization check"
+    // Print *, "max diff N - u n u^{-1} : ", maxval(Abs( NormKernel(:,:) - tempmat(:,:)))
+    // Print *, "max diff N - Nreg       : ", maxval(Abs( NormKernel(:,:) - NormKernelRegularized(:,:)))
+    // Print *, "norm kernel diagonalization check completed"
 }

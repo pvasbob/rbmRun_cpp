@@ -14,4 +14,5 @@ public:
     void diagNormKernel();
     void sortNormEigen();
     void normEigenCutoff();
+    void normKernelExcludingSmallEigen();
 };
