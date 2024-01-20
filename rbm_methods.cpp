@@ -3,6 +3,7 @@
 #include "MultiDimArrayAllocate.h"
 #include "MultiDimArraySetToValue.h"
 #include "MultiDimArrayPrint.h"
+#include "MultiDimArraySort.h"
 #include "DotProduct.h"
 
 #include "MsgToScreen.h"
@@ -398,4 +399,48 @@ void rbm_METHODS::diagNormKernel()
 {
     diagGenComplexMat(nrbm, NormKernel, u_norm, norm_eigen, u_norminv, ierr);
     //
+    if (ierr != 0)
+    {
+        std::cout << "ZGEEV ERROR: INFO = " << ierr << std::endl;
+        std::cerr << "ZGEEV ERROR: INFO = " << ierr << std::endl;
+        throw std::runtime_error("norm kernel diagonalization failed");
+    }
+}
+
+void rbm_METHODS::sortNormEigen()
+{
+    SMALLESTFIRST = false;
+    if (SortedOrder != nullptr)
+        deallocate1dArray<int>(SortedOrder);
+    allocate1dArray<int>(SortedOrder, nrbm);
+    copy1dRealTo1d(norm_eigen, realtemp, nrbm, '+');
+    //
+    msgToScreen("realtemp:");
+    print1d(realtemp, nrbm);
+    //
+    sort2(nrbm, realtemp, SortedOrder, SMALLESTFIRST);
+    msgToScreen("SortedOrder:");
+    print1d(SortedOrder, nrbm);
+
+    if (VARIATION == 1)
+    {
+        // Norm kernel should be Hermitian. Remove small imaginary part
+        for (int i = 1; i <= nrbm; ++i)
+        {
+            if (std::abs(std::imag(norm_eigen[-1 + i])) < 1.0e-15)
+            {
+                norm_eigen[-1 + i] = std::real(norm_eigen[-1 + i]);
+            }
+        }
+    }
+
+    std::cout << "Norm eigenvalues (Re, Im)" << std::endl;
+    for (int i = 1; i <= nrbm; ++i)
+    {
+        std::cout << -1 + i + 1 << " " << std::real(norm_eigen[-1 + SortedOrder[-1 + i]]) << " "
+                  << std::imag(norm_eigen[-1 + SortedOrder[-1 + i]]) << std::endl;
+    }
+
+    std::cout << "----------------------------" << std::endl;
+    std::cout << "normcut = " << normcut << std::endl;
 }

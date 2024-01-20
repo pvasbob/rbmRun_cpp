@@ -176,3 +176,19 @@ void setDiagToValue(T **&array, int dim, T value)
         array[i][i] = value;
     }
 }
+
+// ================================================
+// copy 1d real part to another 1d with settted sign
+// ================================================
+template <typename T>
+void copy1dRealTo1d(std::complex<T> *&array_src, T *&array_dest, int dim, char pm)
+{
+    int sign = +1;
+    if (pm == '-')
+        sign = -1;
+    //
+    for (int i = 0; i < dim; i++)
+    {
+        array_dest[i] = sign * real(array_src[i]);
+    }
+}

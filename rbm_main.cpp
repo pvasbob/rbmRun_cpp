@@ -66,4 +66,5 @@ int main()
     rbm_methods.kernelCalculation();
     //
     rbm_methods.diagNormKernel();
+    rbm_methods.sortNormEigen();
 }

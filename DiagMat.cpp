@@ -192,4 +192,5 @@ void diagGenComplexMat(int &dim,
     //
     msgToScreen("tempmat:");
     print2d(tempmat, dim, dim);
+    deallocate2dArray(tempmat, dim);
 }

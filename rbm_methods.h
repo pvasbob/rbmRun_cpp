@@ -12,4 +12,5 @@ public:
     void kernelCalculation();
 
     void diagNormKernel();
+    void sortNormEigen();
 };

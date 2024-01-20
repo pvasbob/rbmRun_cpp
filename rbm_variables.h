@@ -18,7 +18,7 @@ class rbm_VARIABLES
 {
 public:
     int outp = 20, emu = 21;
-    Complex **tempmat, **tempmat2, **tempmat3;
+    Complex **tempmat = nullptr, **tempmat2 = nullptr, **tempmat3 = nullptr;
     // Variables
     pr pi, Norm;
     int nop;
@@ -27,27 +27,27 @@ public:
     //
     // FAM training data read from binary file
     int nuv;
-    Complex *twoEqp, *omegatrain;
-    Complex **Xtrain, **Ytrain, **dH20, **dH02, **F20, **F02;
+    Complex *twoEqp = nullptr, *omegatrain = nullptr;
+    Complex **Xtrain = nullptr, **Ytrain = nullptr, **dH20 = nullptr, **dH02 = nullptr, **F20 = nullptr, **F02 = nullptr;
 
     // Arrays that depend on ntrain
-    Complex *SFtrain, *TFtrain, *norm_eigen;
-    Complex **NormKernel, **HamiltonianKernel, **NormKernelHalf, **NormKernelRegularized,
-        **unitmat, **NormKernelHalfInv, **u_norm, **u_norminv;
-    pr *realtemp;
+    Complex *SFtrain = nullptr, *TFtrain = nullptr, *norm_eigen = nullptr;
+    Complex **NormKernel = nullptr, **HamiltonianKernel = nullptr, **NormKernelHalf = nullptr, **NormKernelRegularized = nullptr,
+            **unitmat = nullptr, **NormKernelHalfInv = nullptr, **u_norm = nullptr, **u_norminv = nullptr;
+    pr *realtemp = nullptr;
 
     bool SMALLESTFIRST;
     int colldim, ierr;
-    int *collidx, *SortedOrder, *SortedOrder_Hcoll;
+    int *collidx = nullptr, *SortedOrder = nullptr, *SortedOrder_Hcoll = nullptr;
 
     // Arrays that depend on colldim
-    Complex *RBMenergy, *sqrt_norm, *RBMstrength, *RBMstrength1, *RBMstrength2;
-    Complex **H_coll, **g_coll, **g_collinv, **ugn, **ugn2, **X_QRPA_RBM, **Y_QRPA_RBM;
-    pr *RBMstrengthfromXY;
+    Complex *RBMenergy = nullptr, *sqrt_norm = nullptr, *RBMstrength = nullptr, *RBMstrength1 = nullptr, *RBMstrength2 = nullptr;
+    Complex **H_coll = nullptr, **g_coll = nullptr, **g_collinv = nullptr, **ugn = nullptr, **ugn2 = nullptr, **X_QRPA_RBM = nullptr, **Y_QRPA_RBM = nullptr;
+    pr *RBMstrengthfromXY = nullptr;
 
     // Emulator
     Complex qrpa_omega, SFomega;
-    pr *sumrule_emulator;
+    pr *sumrule_emulator = nullptr;
 
     // FAM Namelists
     pr normcut;
