@@ -1,0 +1,41 @@
+program DiagonalizeComplexMatrix
+    implicit none
+
+    ! Implicit None
+    Integer, Parameter :: pr = Kind(1.0d0)
+    Integer, Parameter :: dim = 3
+    Complex(pr) :: mat(dim, dim)
+    Complex(pr) :: eigenvalue(dim)
+    Integer :: info
+    Integer :: i, j
+
+    ! Initialize a 3x3 complex matrix using loops
+    Do i = 1, dim
+        Do j = 1, dim
+            mat(i, j) = (1.0_pr * (i + j) + 2.0_pr * (i + 1) - j)
+        End Do
+    End Do
+
+    ! Print the original matrix
+    Print *, "Original Complex Matrix A:"
+    Do i = 1, dim
+        Do j = 1, dim
+            Print *, mat(i, j)
+        End Do
+    End Do
+
+    ! Call zgeev
+    Call zgeev('N', 'V', dim, mat, dim, eigenvalue, 0, 1, 0, 1, 0, 1, 0, info)
+
+    ! Check for successful computation
+    If (info == 0) Then
+        ! Print eigenvalues
+        Print *, "Eigenvalues:"
+        Do i = 1, dim
+            Print *, eigenvalue(i)
+        End Do
+    Else
+        Print *, "Error: zgeev failed with info =", info
+    End If
+
+End program DiagonalizeComplexMatrix

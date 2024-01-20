@@ -4,10 +4,11 @@ ALL = 	ReadInputToCol.o MultiDimArraySetToValue.h  MultiDimArrayPrint.h DotProdu
 		
 Target = RBM
 CXX = g++
+Flag = -llapack -lblas
 
 
 $(Target): $(ALL)
-	$(CXX) -o $(Target) $(ALL)
+	$(CXX) -o $(Target) $(ALL) $(Flag)
 
 
 clean:
