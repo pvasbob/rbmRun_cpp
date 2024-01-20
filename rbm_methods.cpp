@@ -397,4 +397,5 @@ void rbm_METHODS::kernelCalculation()
 void rbm_METHODS::diagNormKernel()
 {
     diagGenComplexMat(nrbm, NormKernel, u_norm, norm_eigen, u_norminv, ierr);
+    //
 }

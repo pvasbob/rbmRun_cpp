@@ -21,7 +21,7 @@ void allocate2dArray(T **&array, int dim1, int dim2)
 
 // 1D array memory Deallocation
 template <typename T>
-void deallocate1dArray(T *&array, int dim1)
+void deallocate1dArray(T *&array)
 {
     delete[] array;
 }

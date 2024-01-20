@@ -4,16 +4,42 @@
 #include "MsgToScreen.h"
 #include "MultiDimArraySetToValue.h"
 #include "MultiDimArrayPrint.h"
+#include "MultiDimArrayAllocate.h"
 
 // external C library.
 extern "C"
 {
     // Declaration of zgeev from LAPACK
-    extern void zgeev_(char *jobvl, char *jobvr, int *n, std::complex<double> *a, int *lda, std::complex<double> *w,
-                       std::complex<double> *vl, int *ldvl, std::complex<double> *vr, int *ldvr, std::complex<double> *work,
-                       int *lwork, double *rwork, int *info);
+    extern void zgeev_(
+        char *jobvl,
+        char *jobvr,
+        int *n,
+        std::complex<double> *a,
+        int *lda,
+        std::complex<double> *w,
+        std::complex<double> *vl,
+        int *ldvl,
+        std::complex<double> *vr,
+        int *ldvr,
+        std::complex<double> *work,
+        int *lwork,
+        double *rwork,
+        int *info);
 }
 //
+extern "C"
+{
+    // LAPACK zgesv function for solving linear equations
+    void zgesv_(
+        const int *n,
+        const int *nrhs,
+        std::complex<double> *a,
+        const int *lda,
+        int *ipiv,
+        std::complex<double> *b,
+        const int *ldb,
+        int *info);
+}
 //
 void diagGenComplexMat(int &dim,
                        std::complex<double> **mat,
@@ -98,7 +124,72 @@ void diagGenComplexMat(int &dim,
     //
     // In fortran this is 2d to 2d, but in cpp vr is 1d
     copy1dTo2dColMajor(vr, pmat, ldvr * n, dim, dim);
+    copy1dTo1d(w, eigenvalue, n);
     //
     msgToScreen("pmat:");
     print2d(pmat, dim, dim);
+    msgToScreen("eigenvalue:");
+    print1d(eigenvalue, n);
+    //
+    //
+    int ldb = dim;
+    int nrhs = dim;
+    // std::complex<double> ** b =
+    std::complex<double> **bmat;
+    std::complex<double> *b;
+    int *ipiv;
+
+    allocate2dArray<std::complex<double>>(bmat, ldb, nrhs);
+    allocate1dArray<std::complex<double>>(b, ldb * nrhs);
+    allocate1dArray<int>(ipiv, n);
+    //
+    set2dArrayToValue<std::complex<double>>(bmat, ldb, nrhs, 0.0);
+    set1dArrayToValue<int>(ipiv, n, 0.0);
+    set1dArrayToValue<std::complex<double>>(b, ldb * nrhs, 0.0);
+    //
+    setDiagToValue(bmat, ldb, std::complex<double>(1.0, 0.0));
+    copy2dTo1dColMajor(bmat, b, ldb, nrhs, ldb * nrhs);
+    //
+    copy1dTo1d(vr, a, ldvr * n);
+    //
+    // msgToScreen("before zgesv:");
+    // print1d(b, ldb * nrhs);
+    zgesv_(&n, &nrhs, a, &lda, ipiv, b, &ldb, &info);
+    // msgToScreen("after zgesv:");
+    // print1d(b, ldb * nrhs);
+    // zgesv_()
+    // msgToScreen("After zgesv_:");
+    //
+    copy1dTo2dColMajor(b, pmatinv, ldb * nrhs, dim, dim);
+    //
+    deallocate1dArray<std::complex<double>>(a);
+    deallocate1dArray<std::complex<double>>(w);
+    deallocate1dArray<std::complex<double>>(vl);
+    deallocate1dArray<std::complex<double>>(vr);
+    deallocate1dArray<std::complex<double>>(work);
+    deallocate1dArray<double>(rwork);
+    deallocate1dArray<std::complex<double>>(b);
+    deallocate1dArray<int>(ipiv);
+    deallocate2dArray<std::complex<double>>(bmat, ldb);
+
+    msgToScreen("pmatinv:");
+    print2d(pmatinv, dim, dim);
+    //
+    std::complex<double> **tempmat;
+    allocate2dArray(tempmat, dim, dim);
+    set2dArrayToValue<std::complex<double>>(tempmat, dim, dim, 0.0);
+    // int dim = nrbm;
+    for (int i = 1; i <= dim; i++)
+    {
+        for (int j = 1; j <= dim; j++)
+        {
+            for (int k = 1; k <= dim; k++)
+            {
+                tempmat[-1 + i][-1 + j] += pmat[-1 + i][-1 + k] * eigenvalue[-1 + k] * pmatinv[-1 + k][-1 + j];
+            }
+        }
+    }
+    //
+    msgToScreen("tempmat:");
+    print2d(tempmat, dim, dim);
 }

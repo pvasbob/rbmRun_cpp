@@ -163,3 +163,16 @@ void copy2dTo1dColMajor(T **&array_src, T *&array_dest, int dim_src_row, int dim
         }
     }
 }
+
+// ===============================================
+// set 2d diagonal elements to value.
+// ===============================================
+//  only have one dim for 2d becuases the concept of 'diagonal elements' only applys to squre matrix.
+template <typename T>
+void setDiagToValue(T **&array, int dim, T value)
+{
+    for (int i = 0; i < dim; i++)
+    {
+        array[i][i] = value;
+    }
+}
