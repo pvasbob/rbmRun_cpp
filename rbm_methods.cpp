@@ -444,3 +444,39 @@ void rbm_METHODS::sortNormEigen()
     std::cout << "----------------------------" << std::endl;
     std::cout << "normcut = " << normcut << std::endl;
 }
+
+void rbm_METHODS::normEigenCutoff()
+{
+    int j = 0;
+
+    std::cout << "   i      Sqrt(norm) (Re, Im) " << std::endl;
+    for (int i = 1; i <= nrbm; ++i)
+    {
+        if (std::abs(norm_eigen[-1 + SortedOrder[-1 + i]]) < normcut)
+        {
+            continue; // Equivalent to Fortran's "Cycle"
+        }
+        else
+        {
+            j++;
+            collidx[-1 + j] = SortedOrder[-1 + i];
+        }
+
+        sqrt_norm[-1 + j] = std::sqrt(norm_eigen[-1 + SortedOrder[-1 + i]]);
+        if (VARIATION == 1 && std::real(norm_eigen[-1 + SortedOrder[-1 + i]]) < 0.0 &&
+            std::abs(std::real(sqrt_norm[-1 + j])) < 1.0e-15)
+        {
+            sqrt_norm[-1 + j] = std::imag(sqrt_norm[-1 + j]) * iunit; // 1.0i represents the imaginary unit
+        }
+
+        std::cout << std::setw(5) << i + 1 << std::setw(20) << std::setprecision(10) << std::real(sqrt_norm[-1 + j])
+                  << std::setw(20) << std::setprecision(10) << std::imag(sqrt_norm[-1 + j]) << std::endl;
+    }
+
+    int colldim = j;
+    std::cout << "colldim = " << colldim << std::endl;
+    if (colldim == 0)
+    {
+        throw std::runtime_error("colldim = 0");
+    }
+}
