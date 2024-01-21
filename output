@@ -4,7 +4,7 @@ number_of_training_points    = 11
 number_of_operators          = 1
 
 **** Parameters on RBM calculation ****
-mirror_points                = 0x7ffd1fd8e111
+mirror_points                = 0x7fff2ffaefa1
 VARIATION                    = 1
 normcut                      = 1e-10
 rbm_outputfile               = emulatorRBMoutput.dat
@@ -23877,3 +23877,40 @@ RBMstrength:
  index: 33 (-4.5838084243e-01,4.3255676818e-12)
  index: 34 (5.2505164906e-05,3.8938898242e-11)
  index: 35 (-5.2505159525e-05,-4.3434298706e-11)
+RBMstrengthfromXY:
+#row, #col 0 0 4.3804902985e-04
+#row, #col 1 0 8.8411557221e-04
+#row, #col 2 0 2.2779529649e-02
+#row, #col 3 0 1.4375062411e-02
+#row, #col 4 0 1.7335181276e-01
+#row, #col 5 0 1.7335342196e-01
+#row, #col 6 0 2.8860676845e-02
+#row, #col 7 0 2.7067881736e-02
+#row, #col 8 0 2.8859103112e-02
+#row, #col 9 0 2.7068535412e-02
+#row, #col 10 0 6.8297217524e-04
+#row, #col 11 0 1.0341440895e+01
+#row, #col 12 0 2.8373521015e-04
+#row, #col 13 0 4.0519092820e+00
+#row, #col 14 0 1.5835889446e+01
+#row, #col 15 0 7.6944697800e+00
+#row, #col 16 0 2.5920454640e+01
+#row, #col 17 0 2.5920286523e+01
+#row, #col 18 0 1.7224312283e-02
+#row, #col 19 0 3.1480708581e+01
+#row, #col 20 0 6.5417654994e-04
+#row, #col 21 0 1.6147549909e-03
+#row, #col 22 0 6.8761602661e+00
+#row, #col 23 0 3.1005488777e-04
+#row, #col 24 0 9.3508026695e-02
+#row, #col 25 0 9.3711544208e-03
+#row, #col 26 0 3.1480708590e+01
+#row, #col 27 0 6.5417645626e-04
+#row, #col 28 0 1.2051262380e-03
+#row, #col 29 0 1.2919596351e-02
+#row, #col 30 0 5.1502661411e+00
+#row, #col 31 0 3.3312030331e-04
+#row, #col 32 0 1.0664727273e+00
+#row, #col 33 0 7.9568338534e-01
+#row, #col 34 0 1.8871290686e-03
+#row, #col 35 0 2.5111225374e-03

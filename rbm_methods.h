@@ -19,4 +19,5 @@ public:
     void Hcoll();
     void diagCollectiveHamiltonian();
     void calculateStrength();
+    void calculateQRPAXY();
 };

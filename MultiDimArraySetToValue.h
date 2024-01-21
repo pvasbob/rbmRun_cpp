@@ -192,3 +192,14 @@ void copy1dRealTo1d(std::complex<T> *&array_src, T *&array_dest, int dim, char p
         array_dest[i] = sign * real(array_src[i]);
     }
 }
+// =================================================
+// scale a col by value
+// =================================================
+template <typename T>
+void scale2dCol(T **&array, int col_index, int dim, std::complex<double> value)
+{
+    for (int i = 0; i < dim; i++)
+    {
+        array[i][col_index] = array[i][col_index] / value;
+    }
+}

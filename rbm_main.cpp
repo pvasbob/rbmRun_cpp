@@ -73,4 +73,5 @@ int main()
     rbm_methods.Hcoll();
     rbm_methods.diagCollectiveHamiltonian();
     rbm_methods.calculateStrength();
+    rbm_methods.calculateQRPAXY();
 }
