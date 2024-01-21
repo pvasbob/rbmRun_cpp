@@ -16,4 +16,5 @@ public:
     void normEigenCutoff();
     void normKernelExcludingSmallEigen();
     void normKernelHalf();
+    void Hcoll();
 };

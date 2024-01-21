@@ -70,4 +70,5 @@ int main()
     rbm_methods.normEigenCutoff();
     rbm_methods.normKernelExcludingSmallEigen();
     rbm_methods.normKernelHalf();
+    rbm_methods.Hcoll();
 }

@@ -43,7 +43,7 @@ public:
     // Arrays that depend on colldim
     Complex *RBMenergy = nullptr, *sqrt_norm = nullptr, *RBMstrength = nullptr, *RBMstrength1 = nullptr, *RBMstrength2 = nullptr;
     Complex **H_coll = nullptr, **g_coll = nullptr, **g_collinv = nullptr, **ugn = nullptr, **ugn2 = nullptr, **X_QRPA_RBM = nullptr, **Y_QRPA_RBM = nullptr;
-    pr *RBMstrengthfromXY = nullptr;
+    pr **RBMstrengthfromXY = nullptr;
 
     // Emulator
     Complex qrpa_omega, SFomega;

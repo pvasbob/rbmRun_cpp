@@ -558,3 +558,57 @@ void rbm_METHODS::normKernelHalf()
     // Print *, "max diff N - N^{1/2} N^{1/2}: ", maxval(Abs( NormKernel(:,:) - tempmat(:,:)))
     // Print *, "squareroot of norm kernel check completed"
 }
+
+void rbm_METHODS::Hcoll()
+{
+    msgToScreen("Allocation involing colldim:");
+    std::cout << colldim << std::endl;
+    //
+    allocate2dArray(H_coll, colldim, colldim);
+    allocate2dArray(g_coll, colldim, colldim);
+    allocate1dArray(RBMenergy, colldim);
+    allocate1dArray(SortedOrder_Hcoll, colldim);
+    allocate2dArray(g_collinv, colldim, colldim);
+    allocate1dArray(RBMstrength, colldim);
+    allocate2dArray(ugn, nrbm, colldim);
+    allocate2dArray(ugn2, colldim, nrbm);
+    allocate1dArray(RBMstrength1, colldim);
+    allocate1dArray(RBMstrength2, colldim);
+    allocate2dArray(X_QRPA_RBM, nuv, colldim);
+    allocate2dArray(Y_QRPA_RBM, nuv, colldim);
+    allocate2dArray(RBMstrengthfromXY, colldim, nop);
+    //
+    // Memory allocation.
+    set2dArrayToValue<std::complex<double>>(H_coll, colldim, colldim, 0.0);
+    set2dArrayToValue<std::complex<double>>(g_coll, colldim, colldim, 0.0);
+    set1dArrayToValue<std::complex<double>>(RBMenergy, colldim, 0.0);
+    set1dArrayToValue<int>(SortedOrder_Hcoll, colldim, 0.0);
+    set2dArrayToValue<std::complex<double>>(g_collinv, colldim, colldim, 0.0);
+    set1dArrayToValue<std::complex<double>>(RBMstrength, colldim, 0.0);
+    set2dArrayToValue<std::complex<double>>(ugn, nrbm, colldim, 0.0);
+    set2dArrayToValue<std::complex<double>>(ugn2, colldim, nrbm, 0.0);
+    set1dArrayToValue<std::complex<double>>(RBMstrength1, colldim, 0.0);
+    set1dArrayToValue<std::complex<double>>(RBMstrength2, colldim, 0.0);
+    set2dArrayToValue<std::complex<double>>(X_QRPA_RBM, nuv, colldim, 0.0);
+    set2dArrayToValue<std::complex<double>>(Y_QRPA_RBM, nuv, colldim, 0.0);
+    set2dArrayToValue<double>(RBMstrengthfromXY, colldim, nop, 0.0);
+    //
+    // Hcoll
+    set2dArrayToValue<std::complex<double>>(H_coll, colldim, colldim, 0.0);
+    for (int j = 1; j <= colldim; ++j)
+    {
+        for (int i = 1; i <= colldim; ++i)
+        {
+            for (int l = 1; l <= nrbm; ++l)
+            {
+                for (int k = 1; k <= nrbm; ++k)
+                {
+                    H_coll[-1 + i][-1 + j] += u_norminv[-1 + collidx[-1 + i]][-1 + k] * HamiltonianKernel[-1 + k][-1 + l] * (u_norm[-1 + l][-1 + collidx[-1 + j]]) / (sqrt_norm[-1 + i] * sqrt_norm[-1 + j]);
+                }
+            }
+        }
+    }
+    //
+    msgToScreen("H_coll:");
+    print2d(H_coll, colldim, colldim);
+}
