@@ -786,3 +786,31 @@ void rbm_METHODS::calculateQRPAXY()
     msgToScreen("RBMstrengthfromXY:");
     print2d(RBMstrengthfromXY, colldim, nop);
 }
+
+void rbm_METHODS::rbmOutputFile()
+{
+    std::ofstream outp(rbm_outputfile); // Replace "rbm_outputfile.txt" with the actual output file name
+
+    if (outp.is_open())
+    {
+        outp << "Results of the RBM" << std::endl;
+        outp << "1idx          2ReEnergy          3ImEnergy         4ReStr(SuuS)    "
+             << "5ImStr(SuuS)    6StrfromXY(op1)    7StrfromXY(op2) ..." << std::endl;
+
+        for (int i = 1; i <= colldim; ++i)
+        {
+            outp << std::setw(5) << -1 + i + 1;
+
+            for (int j = 1; j <= nop; ++j)
+            {
+                outp << std::setw(20) << std::setprecision(10) << RBMenergy[-1 + SortedOrder_Hcoll[-1 + i]];
+                outp << std::setw(20) << std::setprecision(10) << RBMstrength[-1 + SortedOrder_Hcoll[-1 + i]];
+                outp << std::setw(20) << std::setprecision(10) << RBMstrengthfromXY[-1 + SortedOrder_Hcoll[-1 + i]][-1 + j];
+            }
+
+            outp << std::endl;
+        }
+
+        outp.close();
+    }
+}

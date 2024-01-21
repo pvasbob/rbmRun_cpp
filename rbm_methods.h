@@ -20,4 +20,6 @@ public:
     void diagCollectiveHamiltonian();
     void calculateStrength();
     void calculateQRPAXY();
+    //
+    void rbmOutputFile();
 };
