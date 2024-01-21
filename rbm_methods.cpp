@@ -681,3 +681,44 @@ void rbm_METHODS::diagCollectiveHamiltonian()
     msgToScreen("tempmat colldim: ");
     print2d(tempmat, colldim, colldim);
 }
+
+void rbm_METHODS::calculateStrength()
+{
+    set2dArrayToValue<std::complex<double>>(ugn, nrbm, colldim, 0.0);
+    set2dArrayToValue<std::complex<double>>(ugn2, colldim, nrbm, 0.0);
+    //
+    for (int i = 1; i <= nrbm; ++i)
+    {
+        for (int l = 1; l <= colldim; ++l)
+        {
+            for (int k = 1; k <= colldim; ++k)
+            {
+                ugn[-1 + i][-1 + l] += u_norm[-1 + i][-1 + collidx[-1 + k]] * g_coll[-1 + k][-1 + l] / sqrt_norm[-1 + k];
+                ugn2[-1 + l][-1 + i] += g_collinv[-1 + l][-1 + k] * u_norminv[-1 + collidx[-1 + k]][-1 + i] / sqrt_norm[-1 + k];
+            }
+        }
+    }
+    //
+    set1dArrayToValue<std::complex<double>>(RBMstrength1, colldim, 0.0);
+    //
+    mult1dAnd2d(SFtrain, ugn, RBMstrength1, nrbm, colldim);
+    //
+    set1dArrayToValue<std::complex<double>>(RBMstrength2, colldim, 0.0);
+    //
+    if (VARIATION == 1)
+    {
+        mult2dAndConj1d(ugn2, SFtrain, RBMstrength2, colldim, nrbm);
+    }
+    else
+    {
+        mult2dAnd1d(ugn2, TFtrain, RBMstrength2, colldim, nrbm);
+    }
+    //
+    for (int i = 1; i <= colldim; ++i)
+    {
+        RBMstrength[-1 + i] = RBMstrength1[-1 + i] * RBMstrength2[-1 + i];
+    }
+    //
+    msgToScreen("RBMstrength:");
+    print1d(RBMstrength, colldim);
+}

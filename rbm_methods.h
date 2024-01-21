@@ -18,4 +18,5 @@ public:
     void normKernelHalf();
     void Hcoll();
     void diagCollectiveHamiltonian();
+    void calculateStrength();
 };

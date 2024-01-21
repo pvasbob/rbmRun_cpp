@@ -72,4 +72,5 @@ int main()
     rbm_methods.normKernelHalf();
     rbm_methods.Hcoll();
     rbm_methods.diagCollectiveHamiltonian();
+    rbm_methods.calculateStrength();
 }
