@@ -725,31 +725,61 @@ void rbm_METHODS::calculateStrength()
 
 void rbm_METHODS::calculateQRPAXY()
 {
+    msgToScreen("CalXtrain");
+    print2d(Xtrain, nuv, nrbm);
+    msgToScreen("CalYtrain");
+    print2d(Ytrain, nuv, nrbm);
+    msgToScreen("Calugn");
+    print2d(ugn, nrbm, colldim);
+    //
     mult2dAnd2d(Xtrain, ugn, X_QRPA_RBM, nuv, nrbm, colldim);
     mult2dAnd2d(Ytrain, ugn, Y_QRPA_RBM, nuv, nrbm, colldim);
     //
+    msgToScreen("X_QRPA_RBM");
+    print2d(X_QRPA_RBM, nuv, colldim);
+    //
+    msgToScreen("Y_QRPA_RBM");
+    print2d(Y_QRPA_RBM, nuv, colldim);
+    //
     for (int i = 1; i <= colldim; i++)
     {
-        Norm = std::real(dot2dCol2dCol(X_QRPA_RBM, X_QRPA_RBM, i, i, nuv) - dot2dCol2dCol(Y_QRPA_RBM, Y_QRPA_RBM, i, i, nuv));
+        Norm = std::real(dot2dConjCol2dCol(X_QRPA_RBM, X_QRPA_RBM, -1 + i, -1 + i, nuv) - dot2dConjCol2dCol(Y_QRPA_RBM, Y_QRPA_RBM, -1 + i, -1 + i, nuv));
+        //
+        std::cout << "i, Norm: " << i << " " << Norm << std::endl;
+        //
+        std::cout << "iunit: " << iunit << std::endl;
         //
         if (Norm > 0.0)
         {
-            scale2dCol(X_QRPA_RBM, i, nuv, std::sqrt(Norm));
-            scale2dCol(Y_QRPA_RBM, i, nuv, std::sqrt(Norm));
+            scale2dCol(X_QRPA_RBM, -1 + i, nuv, 1 / std::sqrt(Norm));
+            scale2dCol(Y_QRPA_RBM, -1 + i, nuv, 1 / std::sqrt(Norm));
         }
         else
         {
-            scale2dCol(X_QRPA_RBM, i, nuv, std::sqrt(-Norm) * iunit);
+            scale2dCol(X_QRPA_RBM, -1 + i, nuv, iunit / std::sqrt(-Norm));
+            scale2dCol(Y_QRPA_RBM, -1 + i, nuv, iunit / std::sqrt(-Norm));
         }
         //
-        Norm = std::real(dot2dCol2dCol(X_QRPA_RBM, X_QRPA_RBM, i, i, nuv) - dot2dCol2dCol(Y_QRPA_RBM, Y_QRPA_RBM, i, i, nuv));
+        Norm = std::real(dot2dConjCol2dCol(X_QRPA_RBM, X_QRPA_RBM, -1 + i, -1 + i, nuv) - dot2dConjCol2dCol(Y_QRPA_RBM, Y_QRPA_RBM, -1 + i, -1 + i, nuv));
     }
+    //
+    //
+    msgToScreen("XXX_QRPA_RBM:");
+    print2d(X_QRPA_RBM, nuv, colldim);
+    msgToScreen("XXY_QRPA_RBM:");
+    print2d(Y_QRPA_RBM, nuv, colldim);
+    msgToScreen("XXF20:");
+    print2d(F20, nuv, nop);
+    msgToScreen("XXF02:");
+    print2d(F02, nuv, nop);
+    //
     //
     for (int j = 1; j <= nop; j++)
     {
         for (int i = 1; i <= colldim; i++)
         {
-            RBMstrengthfromXY[-1 + i][-1 + j] = std::abs(std::pow((dot2dCol2dCol(X_QRPA_RBM, F20, -1 + i, -1 + j, nuv) + dot2dCol2dCol(Y_QRPA_RBM, F02, -1 + i, -1 + j, nuv)), 2));
+            RBMstrengthfromXY[-1 + i][-1 + j] = std::pow((std::abs(dot2dConjCol2dCol(X_QRPA_RBM, F20, -1 + i, -1 + j, nuv) + dot2dConjCol2dCol(Y_QRPA_RBM, F02, -1 + i, -1 + j, nuv))), 2);
+            // std::cout << "Check dot: " << dot2dConjCol2dCol(X_QRPA_RBM, F20, -1 + i, -1 + j, nuv) << " " << dot2dConjCol2dCol(Y_QRPA_RBM, F02, -1 + i, -1 + j, nuv) << std::endl;
         }
     }
     //

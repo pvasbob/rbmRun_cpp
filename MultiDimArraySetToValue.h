@@ -200,6 +200,6 @@ void scale2dCol(T **&array, int col_index, int dim, std::complex<double> value)
 {
     for (int i = 0; i < dim; i++)
     {
-        array[i][col_index] = array[i][col_index] / value;
+        array[i][col_index] = array[i][col_index] * value;
     }
 }
