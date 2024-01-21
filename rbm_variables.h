@@ -47,7 +47,7 @@ public:
 
     // Emulator
     Complex qrpa_omega, SFomega;
-    pr *sumrule_emulator = nullptr;
+    pr sumrule_emulator[9];
 
     // FAM Namelists
     pr normcut;
