@@ -69,4 +69,5 @@ int main()
     rbm_methods.sortNormEigen();
     rbm_methods.normEigenCutoff();
     rbm_methods.normKernelExcludingSmallEigen();
+    rbm_methods.normKernelHalf();
 }

@@ -522,3 +522,39 @@ void rbm_METHODS::normKernelExcludingSmallEigen()
     // Print *, "max diff N - Nreg       : ", maxval(Abs( NormKernel(:,:) - NormKernelRegularized(:,:)))
     // Print *, "norm kernel diagonalization check completed"
 }
+
+void rbm_METHODS::normKernelHalf()
+{
+    allocate2dArray<std::complex<double>>(NormKernelHalf, nrbm, nrbm);
+    allocate2dArray<std::complex<double>>(NormKernelHalfInv, nrbm, nrbm);
+    //
+    for (int i = 1; i <= nrbm; ++i)
+    {
+        for (int j = 1; j <= nrbm; ++j)
+        {
+            for (int k = 1; k <= colldim; ++k)
+            {
+                NormKernelHalf[-1 + i][-1 + j] += u_norm[-1 + i][-1 + collidx[-1 + k]] * sqrt_norm[-1 + k] * u_norminv[-1 + collidx[-1 + k]][-1 + j];
+                NormKernelHalfInv[-1 + i][-1 + j] += u_norm[-1 + i][-1 + collidx[-1 + k]] * std::pow(sqrt_norm[-1 + k], -1.0) * u_norminv[-1 + collidx[-1 + k]][-1 + j];
+            }
+        }
+    }
+    //
+    msgToScreen("NormKernelHalf before tempmat:");
+    print2d(NormKernelHalf, nrbm, nrbm);
+    msgToScreen("NormKernelHalfInv before tempmat:");
+    print2d(NormKernelHalfInv, nrbm, nrbm);
+    //
+    //
+    //
+    mult2dAnd2d<std::complex<double>>(NormKernelHalf, NormKernelHalf, tempmat, nrbm, nrbm, nrbm);
+    //
+    msgToScreen("NormKernelHalf: tempmat:");
+    print2d(tempmat, nrbm, nrbm);
+    //
+    //  Below not important, implement later.
+    //! check
+    // Print *, "squareroot of norm kernel check"
+    // Print *, "max diff N - N^{1/2} N^{1/2}: ", maxval(Abs( NormKernel(:,:) - tempmat(:,:)))
+    // Print *, "squareroot of norm kernel check completed"
+}

@@ -15,4 +15,5 @@ public:
     void sortNormEigen();
     void normEigenCutoff();
     void normKernelExcludingSmallEigen();
+    void normKernelHalf();
 };
