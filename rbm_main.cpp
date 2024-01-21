@@ -71,4 +71,5 @@ int main()
     rbm_methods.normKernelExcludingSmallEigen();
     rbm_methods.normKernelHalf();
     rbm_methods.Hcoll();
+    rbm_methods.diagCollectiveHamiltonian();
 }

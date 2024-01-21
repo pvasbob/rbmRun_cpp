@@ -17,4 +17,5 @@ public:
     void normKernelExcludingSmallEigen();
     void normKernelHalf();
     void Hcoll();
+    void diagCollectiveHamiltonian();
 };

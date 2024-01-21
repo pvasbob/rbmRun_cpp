@@ -443,6 +443,8 @@ void rbm_METHODS::sortNormEigen()
 
     std::cout << "----------------------------" << std::endl;
     std::cout << "normcut = " << normcut << std::endl;
+    //
+    deallocate1dArray<double>(realtemp);
 }
 
 void rbm_METHODS::normEigenCutoff()
@@ -557,6 +559,7 @@ void rbm_METHODS::normKernelHalf()
     // Print *, "squareroot of norm kernel check"
     // Print *, "max diff N - N^{1/2} N^{1/2}: ", maxval(Abs( NormKernel(:,:) - tempmat(:,:)))
     // Print *, "squareroot of norm kernel check completed"
+    deallocate2dArray(tempmat, nrbm);
 }
 
 void rbm_METHODS::Hcoll()
@@ -609,6 +612,72 @@ void rbm_METHODS::Hcoll()
         }
     }
     //
-    msgToScreen("H_coll:");
-    print2d(H_coll, colldim, colldim);
+    // msgToScreen("H_coll:");
+    // print2d(H_coll, colldim, colldim);
+}
+
+void rbm_METHODS::diagCollectiveHamiltonian()
+{
+    std::cout << "**** Diagonalizing collective Hamiltonian ****" << std::endl;
+
+    diagGenComplexMat(colldim, H_coll, g_coll, RBMenergy, g_collinv, ierr);
+    //
+    msgToScreen("g_coll:");
+    print2d(g_coll, colldim, colldim);
+    //
+    msgToScreen("RBMenergy:");
+    print1d(RBMenergy, colldim);
+    //
+    msgToScreen("g_collinv:");
+    print2d(g_collinv, colldim, colldim);
+    //
+    if (ierr != 0)
+    {
+        std::cout << "Hcoll diagonalization ERROR: INFO = " << ierr << std::endl;
+        std::cout << "Hcoll diagonalization ERROR: INFO = " << ierr << std::endl;
+        throw std::runtime_error("Hcoll diagonalization failed");
+    }
+    //
+    SMALLESTFIRST = true;
+    if (realtemp != nullptr)
+    {
+        deallocate1dArray(realtemp);
+    }
+    allocate1dArray(realtemp, colldim);
+    //
+    for (int i = 0; i < colldim; i++)
+    {
+        realtemp[i] = std::real(RBMenergy[i]);
+    }
+    //
+    sort2(colldim, realtemp, SortedOrder_Hcoll, SMALLESTFIRST);
+    //
+    msgToScreen("SortedOrder_Hcoll:");
+    print1d(SortedOrder_Hcoll, colldim);
+    //
+    std::cout << "QROA energies" << std::endl;
+    std::cout << " i    ReE      ImE" << std::endl;
+    //
+    for (int k = 1; k <= colldim; ++k)
+    {
+        std::cout << std::setw(5) << -1 + k + 1 << std::setw(20) << std::setprecision(10) << std::real(RBMenergy[-1 + SortedOrder_Hcoll[-1 + k]])
+                  << std::setw(20) << std::setprecision(10) << std::imag(RBMenergy[-1 + SortedOrder_Hcoll[-1 + k]]) << std::endl;
+    }
+    //
+    // The deallocate below can't work, for we dont know ( or very hard to track) its dimension.
+    // If(Allocated(tempmat)) Deallocate(tempmat)
+    allocate2dArray(tempmat, colldim, colldim);
+    for (int i = 1; i <= colldim; ++i)
+    {
+        for (int j = 1; j <= colldim; ++j)
+        {
+            for (int k = 1; k <= colldim; ++k)
+            {
+                tempmat[-1 + i][-1 + j] += g_coll[-1 + i][-1 + SortedOrder_Hcoll[-1 + k]] * RBMenergy[-1 + SortedOrder_Hcoll[-1 + k]] * g_collinv[-1 + SortedOrder_Hcoll[-1 + k]][-1 + j];
+            }
+        }
+    }
+    //
+    msgToScreen("tempmat colldim: ");
+    print2d(tempmat, colldim, colldim);
 }
