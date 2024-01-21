@@ -814,3 +814,66 @@ void rbm_METHODS::rbmOutputFile()
         outp.close();
     }
 }
+
+void rbm_METHODS::strengthEmulatorRun()
+{
+
+    std::ofstream emu(emulator_outputfile); // Replace "emulator_outputfile.txt" with the actual output file name
+
+    if (emu.is_open())
+    {
+        emu << "#1qrpa_omega(Re) 2qrpa_omega(Im) 3SFomega(Re) 4SFomega(Im) 5-13Sumrule" << std::endl;
+
+        for (int l = 0; l < nmax_emulatorrun; ++l)
+        {
+            // FAMEmulator(colldim, qrpa_omega, RBMenergy, RBMstrength, SFomega);
+            famEmulator();
+
+            if (std::abs(std::real(qrpa_omega)) > 1.0e-15)
+            {
+                for (int j = -4; j <= 4; ++j)
+                {
+                    sumrule_emulator[j + 4] -= std::pow(std::real(qrpa_omega), j) * std::imag(SFomega) / M_PI * std::real(qrpa_omega_emulatorrun_step);
+                }
+            }
+
+            emu << std::setw(20) << std::setprecision(10) << std::real(qrpa_omega)
+                << std::setw(20) << std::setprecision(10) << std::imag(qrpa_omega)
+                << std::setw(20) << std::setprecision(10) << std::real(SFomega)
+                << std::setw(20) << std::setprecision(10) << std::imag(SFomega);
+
+            for (int j = 0; j < 9; ++j)
+            {
+                emu << std::setw(20) << std::setprecision(10) << sumrule_emulator[j];
+            }
+
+            emu << std::endl;
+
+            qrpa_omega += qrpa_omega_emulatorrun_step;
+        }
+
+        emu.close();
+
+        std::cout << "Sum rules in the energy region from " << std::real(qrpa_omega_emulatorrun_start)
+                  << " to " << std::real(qrpa_omega - qrpa_omega_emulatorrun_step) << std::endl;
+
+        for (int k = -4; k <= 4; ++k)
+        {
+            std::cout << "m_" << k << " = " << sumrule_emulator[k + 4] << std::endl;
+        }
+    }
+    else
+    {
+        std::cerr << "Error opening file for writing." << std::endl;
+    }
+}
+
+void rbm_METHODS::famEmulator()
+{
+    SFomega = 0.0;
+
+    for (int i = 1; i <= colldim; ++i)
+    {
+        SFomega -= RBMstrength[-1 + i] / (RBMenergy[i] - qrpa_omega);
+    }
+}

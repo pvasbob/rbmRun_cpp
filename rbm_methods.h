@@ -22,4 +22,7 @@ public:
     void calculateQRPAXY();
     //
     void rbmOutputFile();
+    void strengthEmulatorRun();
+    //
+    void famEmulator();
 };

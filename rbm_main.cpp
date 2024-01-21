@@ -76,4 +76,5 @@ int main()
     rbm_methods.calculateQRPAXY();
     //
     rbm_methods.rbmOutputFile();
+    rbm_methods.strengthEmulatorRun();
 }
